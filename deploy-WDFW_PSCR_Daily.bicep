@@ -41,9 +41,6 @@
 
  */
 
-
-param location string = resourceGroup().location
-param name string = uniqueString(resourceGroup().id)
 @secure()
 param testSecret0001 string
 
