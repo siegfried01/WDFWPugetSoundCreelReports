@@ -1,0 +1,14 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "testSecret0001": {
+      "reference": {
+        "keyVault": {
+            "id": "/subscriptions/acc26051-92a5-4ed1-a226-64a187bc27db/resourceGroups/rg_AADAccessAzureSQLPerm/providers/Microsoft.KeyVault/vaults/kv-AADAccessAzureSQLPerm"
+        },
+        "secretName": "test-secret-0001"
+      }
+    }
+   } 
+}
