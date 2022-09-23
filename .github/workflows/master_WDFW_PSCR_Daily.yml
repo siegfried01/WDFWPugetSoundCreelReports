@@ -5,12 +5,12 @@ on:
     - master
   workflow_dispatch:
 env:
-  AZURE_WEBAPP_NAME: hqdqhengdtz4w-website
+  AZURE_WEBAPP_NAME: pending-website
   AZURE_WEBAPP_PACKAGE_PATH: ./published
   CONFIGURATION: Release
   DOTNET_CORE_VERSION: 6.0.x
   WORKING_DIRECTORY: .
-  RG: rrg_WDFW_PSCR_Daily
+  RG: rg_WDFW_PSCR_Daily
 jobs:
   build:
     runs-on: ubuntu-latest
