@@ -4,6 +4,8 @@ on:
     branches:
     - master
   workflow_dispatch:
+  schedule:
+    - cron: '*/10 * * * *'    # every day at midnight
 env:
   AZURE_WEBAPP_NAME: pending-website
   AZURE_WEBAPP_PACKAGE_PATH: ./published

@@ -7,12 +7,17 @@
 #r "nuget: Core.HttpClient, 3.1.9.12"
 #r "nuget: HtmlAgilityPack, 1.11.46"
 #r "nuget: Microsoft.Azure.Storage.Blob, 11.2.3"
-#r "nuget: WindowsAzure.Storage, 9.3.3"    
-
+#r "nuget: WindowsAzure.Storage, 9.3.3"
+#r "nuget: Azure.Security.KeyVault.Secrets, 4.4.0"
+#r "nuget: Azure.Identity, 1.7.0"
+    
 using System.Net.Http;
 using HtmlAgilityPack;
 using Microsoft.WindowsAzure.Storage;
 using static System.Environment;
+using Azure.Security.KeyVault.Secrets;
+using Azure.Identity;
+
 
 public class ScrapeCreelReportsMainProgram
 {
@@ -21,7 +26,7 @@ public class ScrapeCreelReportsMainProgram
     public static async Task UploadBlob(string storageAccountConnection, string storageAccountContainer, string blobName, string text)
     {
         // https://www.c-sharpcorner.com/article/using-azure-blob-storage-in-c-sharp/
-        // https://stackoverflow.com/questions/56220364/is-there-any-way-of-writing-file-to-azure-blob-storage-directly-from-c-sharp-app        
+        // https://stackoverflow.com/questions/56220364/is-there-any-way-of-writing-file-to-azure-blob-storage-directly-from-c-sharp-app
         var storageAccount = CloudStorageAccount.Parse(storageAccountConnection);
         var blobClient = storageAccount.CreateCloudBlobClient();
         var container = blobClient.GetContainerReference(storageAccountContainer);
@@ -134,10 +139,15 @@ public class ScrapeCreelReportsMainProgram
             WriteLine("\nException Caught!");
             WriteLine("Message :{0} ", e.Message);
         }
-        string? storageAccountConnection = GetEnvironmentVariable("PSCR_STORAGE_ACCOUNT_CONNECTION");
-        string? storageAccountContainer = GetEnvironmentVariable("PSCR_CONTAINER_NAME");
+        //string? storageAccountConnection = GetEnvironmentVariable("PSCR_STORAGE_ACCOUNT_CONNECTION");
+        string? storageAccountContainer = "pzveowxpswgja-siegblobcontainer";//GetEnvironmentVariable("PSCR_CONTAINER_NAME");
         //var blobName = "PSCR_" + DateTime.Parse(txtDate).ToString("yyMMdd_HHmmssddd")+".csv";
         var blobName = "PSCR_" + DateTime.Now.ToString("yyMMdd_HHmmssddd")+".csv";
+        var vaultUrl = "https://kv-aadaccessazuresqlperm.vault.azure.net/";
+        var secretClient = new SecretClient(vaultUri: new Uri(vaultUrl), credential: new DefaultAzureCredential());
+        // Retrieve a secret using the secret client.
+        string? storageAccountConnection = secretClient.GetSecret("pzveowxpswgjastgacc-connection").Value.Value;
+        
         if (!string.IsNullOrEmpty(storageAccountConnection) && !string.IsNullOrEmpty(storageAccountContainer))
             await UploadBlob(storageAccountConnection, storageAccountContainer, blobName, csvCreelReport.ToString());
         else
