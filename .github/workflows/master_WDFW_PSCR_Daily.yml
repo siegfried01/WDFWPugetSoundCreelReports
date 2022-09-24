@@ -19,21 +19,11 @@ jobs:
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}    
     - uses: actions/checkout@v2
-    - name: deploy Plan and Web Site
-      uses: azure/arm-deploy@v1
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
       with:
-        subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
-        resourceGroupName: ${{ env.RG }}
-        template: ./deploy-WDFW_PSCR_Daily.bicep
-        parameters: '@deploy-WDFW_PSCR_Daily-parameters.json'
-        failOnStdErr: false        
-    - name: deploy fetch test secret from key vault
-      uses: azure/arm-deploy@v1
-      with:
-        subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
-        resourceGroupName: ${{ env.RG }}
-        template: ./deploy-WDFW_PSCR_Daily.bicep
-        parameters: '@deploy-WDFW_PSCR_Daily-parameters.json'
-        failOnStdErr: false        
+        dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
+    - name: Run Script
+      run: dotnet-script ./HttpClient.csx
 
             
