@@ -99,7 +99,7 @@ public class ScrapeCreelReportsMainProgram
         var count = 1;
         if ( args.Count() >= 1 )
             Int32.TryParse(args[0], out count);
-        var uri = GetEnvironmentVariable("PSCR_URI");// "https://wdfw.wa.gov/fishing/reports/creel/puget";
+        var uri = "https://wdfw.wa.gov/fishing/reports/creel/puget"; // GetEnvironmentVariable("PSCR_URI");
         System.IO.StringWriter csvCreelReport = new();
         var txtDate = "";
 
