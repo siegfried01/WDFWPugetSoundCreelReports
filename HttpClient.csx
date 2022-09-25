@@ -141,8 +141,8 @@ public class ScrapeCreelReportsMainProgram
         }
         //string? storageAccountConnection = GetEnvironmentVariable("PSCR_STORAGE_ACCOUNT_CONNECTION");
         string? storageAccountContainer = "pzveowxpswgja-siegblobcontainer";//GetEnvironmentVariable("PSCR_CONTAINER_NAME");
-        //var blobName = "PSCR_" + DateTime.Parse(txtDate).ToString("yyMMdd_HHmmssddd")+".csv";
-        var blobName = "PSCR_" + DateTime.Now.ToString("yyMMdd_HHmmssddd")+".csv";
+        var blobName = "PSCR_" + DateTime.Parse(txtDate).ToString("yyMMdd_HHmmssddd")+".csv";
+        //var blobName = "PSCR_" + DateTime.Now.ToString("yyMMdd_HHmmssddd")+".csv";
         var vaultUrl = "https://kv-aadaccessazuresqlperm.vault.azure.net/";
         var secretClient = new SecretClient(vaultUri: new Uri(vaultUrl), credential: new DefaultAzureCredential());
         // Retrieve a secret using the secret client.
