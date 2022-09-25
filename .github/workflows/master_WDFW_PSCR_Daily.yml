@@ -2,7 +2,7 @@ name: Build and deploy .NET Core application to Web App hqdqhengdtz4w-website
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 18 * * *'    # every day at at 6PM
+    - cron: '0 6 * * *'    # every day at at 6AM
 env:
   AZURE_WEBAPP_NAME: pending-website
   AZURE_WEBAPP_PACKAGE_PATH: ./published
