@@ -223,7 +223,7 @@ public class ScrapeCreelReportsMainProgram
     private static HttpClient client = new HttpClient();
     public static async Task Main(string[] args)
     {
-        var uri = GetEnvironmentVariable("PSCR_URI");// "https://wdfw.wa.gov/fishing/reports/creel/puget";
+        var uri = GetEnvironmentVariable("PSCR_URI")?? "https://wdfw.wa.gov/fishing/reports/creel/puget";
         System.IO.StringWriter csvCreelReport = new();
         List<List<string>> rows = new();
         string txtDate = "";
