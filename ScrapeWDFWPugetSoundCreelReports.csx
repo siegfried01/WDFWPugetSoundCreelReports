@@ -270,8 +270,8 @@ public class ScrapeCreelReportsMainProgram
                 await UploadBlob(storageAccountConnection, storageAccountContainer, blobName, csvCreelReport.ToString());
             else
                 WriteLine("mismatch1");
+            blobName =  "PSCR_" + (runInGitHub ? DateTime.Parse(txtDate).ToString("yyMMdd_HHmmssddd") :  "PSCR_" + DateTime.Now.ToString("yyMMdd_"+(upload?"HHmmss":"")+"ddd")) + ".xml";
             txtDate = DateTime.Parse(txtDate).ToString("yyyy-MM-ddTHH:mm:ss.fff"); // convert to XML date forma
-            blobName =  runInGitHub ? "PSCR_" + DateTime.Parse(txtDate).ToString("yyMMdd_HHmmssddd")+".csv" :  "PSCR_" + DateTime.Now.ToString("yyMMdd_"+(upload?"HHmmss":"")+"ddd") + ".xml";
             csvCreelReport = new();
             if (htmlTableRows is not null)
             {
