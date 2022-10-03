@@ -24,6 +24,7 @@ public class ScrapeCreelReportsMainProgram
     private static string seperator = ",";
     private static string replaceComma = ",";
     private static bool upload = true;
+    private static bool runInGitHub = true;
     public static async Task UploadBlob(string storageAccountConnection, string storageAccountContainer, string blobName, string text)
     {
         if (upload)
@@ -259,8 +260,7 @@ public class ScrapeCreelReportsMainProgram
             }
             //string? storageAccountConnection = GetEnvironmentVariable("PSCR_STORAGE_ACCOUNT_CONNECTION");
             string? storageAccountContainer = "pzveowxpswgja-siegblobcontainer";//GetEnvironmentVariable("PSCR_CONTAINER_NAME");
-            //var blobName = "PSCR_" + DateTime.Parse(txtDate).ToString("yyMMdd_HHmmssddd")+".csv";
-            var blobName = "PSCR_" + DateTime.Now.ToString("yyMMdd_"+(upload?"HHmmss":"")+"ddd") + ".csv";
+            var blobName = runInGitHub ? "PSCR_" + DateTime.Parse(txtDate).ToString("yyMMdd_HHmmssddd")+".csv" :  "PSCR_" + DateTime.Now.ToString("yyMMdd_"+(upload?"HHmmss":"")+"ddd") + ".csv";
             var vaultUrl = "https://kv-aadaccessazuresqlperm.vault.azure.net/";
             var secretClient = upload ? new SecretClient(vaultUri: new Uri(vaultUrl), credential: new DefaultAzureCredential()) : null;
             // Retrieve a secret using the secret client.
@@ -271,7 +271,7 @@ public class ScrapeCreelReportsMainProgram
             else
                 WriteLine("mismatch1");
             txtDate = DateTime.Parse(txtDate).ToString("yyyy-MM-ddTHH:mm:ss.fff"); // convert to XML date forma
-            blobName = "PSCR_" + DateTime.Now.ToString("yyMMdd_" + (upload ? "HHmmss" : "") + "ddd") + ".xml";
+            blobName =  runInGitHub ? "PSCR_" + DateTime.Parse(txtDate).ToString("yyMMdd_HHmmssddd")+".csv" :  "PSCR_" + DateTime.Now.ToString("yyMMdd_"+(upload?"HHmmss":"")+"ddd") + ".xml";
             csvCreelReport = new();
             if (htmlTableRows is not null)
             {
