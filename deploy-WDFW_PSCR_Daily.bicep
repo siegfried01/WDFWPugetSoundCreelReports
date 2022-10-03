@@ -12,7 +12,7 @@
    write-output WaitForBuildComplete
    WaitForBuildComplete
    write-output "Previous build is complete. Begin deployment build."
-   az.cmd deployment group create --name $name --resource-group $rg   --template-file  deploy-WDFW_PSCR_Daily.bicep --parameters '@deploy-WDFW_PSCR_Daily-parameters.json'
+   az.cmd deployment group create --name $name --resource-group $rg   --template-file  deploy-WDFW_PSCR_Daily.bicep
    write-output "end deploy"
    Get-AzResource -ResourceGroupName $rg | ft
    End commands to deploy this file using Azure CLI with PowerShell
@@ -41,7 +41,130 @@
 
  */
 
-@secure()
-param testSecret0001 string
 
-output testSecret0001 string = testSecret0001
+param location string = resourceGroup().location
+param name string = uniqueString(resourceGroup().id)
+param fileShare bool = false
+param table bool = false
+
+resource storageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' = {
+  name: '${name}stgacc'
+  location: location
+  sku: {
+    name: 'Standard_LRS'
+  }
+  kind: 'StorageV2'
+  properties: {
+    dnsEndpointType: 'Standard'
+    defaultToOAuthAuthentication: false
+    publicNetworkAccess: 'Enabled'
+    allowCrossTenantReplication: false
+    isLocalUserEnabled: true
+    isSftpEnabled: true
+    minimumTlsVersion: 'TLS1_2'
+    allowBlobPublicAccess: true
+    allowSharedKeyAccess: true
+    isHnsEnabled: true
+    networkAcls: {
+      bypass: 'AzureServices'
+      virtualNetworkRules: []
+      ipRules: []
+      defaultAction: 'Allow'
+    }
+    supportsHttpsTrafficOnly: false
+    encryption: {
+      services: {
+        file: {
+          keyType: 'Account'
+          enabled: true
+        }
+        blob: {
+          keyType: 'Account'
+          enabled: true
+        }
+      }
+      keySource: 'Microsoft.Storage'
+    }
+    accessTier: 'Cool'
+  }
+
+  resource blobSvcs 'blobServices@2022-05-01' = {
+    name: 'default'
+    properties: {
+      cors: {
+        corsRules: []
+      }
+      deleteRetentionPolicy: {
+        allowPermanentDelete: true
+        enabled: false
+      }
+    }
+    resource siegblobcontainer 'containers@2022-05-01' = {
+      name: '${name}-siegblobcontainer'
+      properties: {
+        immutableStorageWithVersioning: {
+          enabled: false
+        }
+        defaultEncryptionScope: '$account-encryption-key'
+        denyEncryptionScopeOverride: false
+        publicAccess: 'None'
+      }
+    }
+  }
+
+  resource fileShareSvcs 'fileServices@2022-05-01' = if (fileShare) {
+    name: 'default'
+    properties: {
+      protocolSettings: {
+        smb: {
+        }
+      }
+      cors: {
+        corsRules: []
+      }
+      shareDeleteRetentionPolicy: {
+        enabled: true
+        days: 1
+      }
+    }
+    resource siegFileShare 'shares@2022-05-01' = {
+      name: 'siegfileshare'
+      properties: {
+        accessTier: 'Cool'
+        shareQuota: 5120
+        enabledProtocols: 'SMB'
+      }
+    }
+  }
+
+  resource queueSvcs 'queueServices@2022-05-01' = {
+    name: 'default'
+    properties: {
+      cors: {
+        corsRules: []
+      }
+    }
+    resource storageAccounts_pzveowxpswgjastgacc_name_default_siegqueue 'queues@2022-05-01' = {
+      name: 'siegqueue'
+      properties: {
+        metadata: {
+        }
+      }
+    }
+  }
+
+  resource tableSvcs 'tableServices@2022-05-01' = if (table)  {
+    name: 'default'
+    properties: {
+      cors: {
+        corsRules: []
+      }
+    }
+
+    resource siegtable 'tables@2022-05-01' = {
+      name: '${name}-siegtable'
+      properties: {
+      }
+    }
+  }
+}

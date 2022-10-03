@@ -2,7 +2,7 @@ name: Build and deploy .NET Core application to Web App hqdqhengdtz4w-website
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 6 * * *'    # every day at at 6AM
+    - cron: '0 3 * * *'    # every day at at 3AM
 env:
   AZURE_WEBAPP_NAME: pending-website
   AZURE_WEBAPP_PACKAGE_PATH: ./published
@@ -25,6 +25,6 @@ jobs:
     - name: install dotnet script tool
       run: dotnet tool install -g dotnet-script
     - name: Run Script
-      run: dotnet-script ./HttpClient.csx
+      run: dotnet-script ./ScrapeWDFWPugetSoundCreelReports.csx
 
             
