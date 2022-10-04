@@ -1,5 +1,8 @@
 name: Build and deploy .NET Core application to Web App hqdqhengdtz4w-website
 on:
+  push:
+    branches:
+    - master
   workflow_dispatch:
   schedule:
     - cron: '0 3 * * *'    # every day at at 3AM

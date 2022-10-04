@@ -235,7 +235,10 @@ public class ScrapeCreelReportsMainProgram
             string html = await client.GetStringAsync(uri);
             var htmlDoc2 = new HtmlDocument();
             htmlDoc2.LoadHtml(html);
-            var htmlTHeadTr = htmlDoc2.DocumentNode.SelectSingleNode("//body/div/div/div[1]/div[5]/div/main/section/div/section[2]/article/div/div/div/div/div/section[2]/div/div/div[2]/table/thead/tr");
+            var htmlTHeadTr = htmlDoc2.DocumentNode.SelectSingleNode(
+                    "//body/div/div/div/div/div[5]/div/main/section/div/section/article/div/div/div/div/div/section[2]/div/div/div[2]/table/thead/tr" // Tue Oct 04 08:39 2022
+                  //"//body/div/div/div[1]/div[5]/div/main/section/div/section[2]/article/div/div/div/div/div/section[2]/div/div/div[2]/table/thead/tr" 
+                );
             List<string> columnHeaders = new() { "\"Date\"" };
             foreach (var node in htmlTHeadTr.ChildNodes)
             {
@@ -246,8 +249,14 @@ public class ScrapeCreelReportsMainProgram
             var headers = $"{string.Join(seperator, columnHeaders)}";
             csvCreelReport.WriteLine(headers);
             WriteLine(headers);
-            txtDate = htmlDoc2.DocumentNode.SelectSingleNode("//body/div/div/div[1]/div[5]/div/main/section/div/section[2]/article/div/div/div/div/div/section[2]/div/div/div[2]/table/caption/text()").InnerHtml.Trim();
-            HtmlNode htmlTableRows = htmlDoc2.DocumentNode.SelectSingleNode("//body/div/div/div[1]/div[5]/div/main/section/div/section[2]/article/div/div/div/div/div/section[2]/div/div/div[2]/table/tbody");
+            txtDate = htmlDoc2.DocumentNode.SelectSingleNode(
+                    "//body/div/div/div/div/div[5]/div/main/section/div/section/article/div/div/div/div/div/section[2]/div/div/div[2]/table/caption/text()" // Tue Oct 04 08:40 2022
+                  //"//body/div/div/div[1]/div[5]/div/main/section/div/section[2]/article/div/div/div/div/div/section[2]/div/div/div[2]/table/caption/text()" 
+                ).InnerHtml.Trim();
+            HtmlNode htmlTableRows = htmlDoc2.DocumentNode.SelectSingleNode(
+                    "//body/div/div/div/div/div[5]/div/main/section/div/section/article/div/div/div/div/div/section[2]/div/div/div[2]/table/tbody" // Tue Oct 04 08:40 2022
+                  //"//body/div/div/div[1]/div[5]/div/main/section/div/section[2]/article/div/div/div/div/div/section[2]/div/div/div[2]/table/tbody"
+                );
             rows = ExtractDataFromHtmlTableRows(htmlTableRows);
             foreach (var row in rows)
             {
@@ -271,7 +280,7 @@ public class ScrapeCreelReportsMainProgram
             else
                 WriteLine("mismatch1");
             blobName =  "PSCR_" + (runInGitHub ? DateTime.Parse(txtDate).ToString("yyMMdd_HHmmssddd") :  "PSCR_" + DateTime.Now.ToString("yyMMdd_"+(upload?"HHmmss":"")+"ddd")) + ".xml";
-            txtDate = DateTime.Parse(txtDate).ToString("yyyy-MM-ddTHH:mm:ss.fff"); // convert to XML date forma
+            txtDate = DateTime.Parse(txtDate).ToString("yyyy-MM-ddTHH:mm:ss.fff"); // convert to XML date format
             csvCreelReport = new();
             if (htmlTableRows is not null)
             {
