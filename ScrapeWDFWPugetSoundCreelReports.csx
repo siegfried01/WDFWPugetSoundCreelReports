@@ -232,12 +232,13 @@ public class ScrapeCreelReportsMainProgram
         // Call asynchronous network methods in a try/catch block to handle exceptions.
         try
         {
+            var xpath = "/html/body/div/div/div/div/div[5]/div/main/section/div/section/article/div/div/div/div/div/section[2]/div/div/div[2]"; // Tue Oct 04 08:58 2022
             string html = await client.GetStringAsync(uri);
             var htmlDoc2 = new HtmlDocument();
             htmlDoc2.LoadHtml(html);
             var htmlTHeadTr = htmlDoc2.DocumentNode.SelectSingleNode(
-                    "//body/div/div/div/div/div[5]/div/main/section/div/section/article/div/div/div/div/div/section[2]/div/div/div[2]/table/thead/tr" // Tue Oct 04 08:39 2022
-                  //"//body/div/div/div[1]/div[5]/div/main/section/div/section[2]/article/div/div/div/div/div/section[2]/div/div/div[2]/table/thead/tr" 
+                    $"{xpath}/table/thead/tr" // Tue Oct 04 08:39 2022
+                   //"//body/div/div/div[1]/div[5]/div/main/section/div/section[2]/article/div/div/div/div/div/section[2]/div/div/div[2]/table/thead/tr" 
                 );
             List<string> columnHeaders = new() { "\"Date\"" };
             foreach (var node in htmlTHeadTr.ChildNodes)
@@ -250,12 +251,12 @@ public class ScrapeCreelReportsMainProgram
             csvCreelReport.WriteLine(headers);
             WriteLine(headers);
             txtDate = htmlDoc2.DocumentNode.SelectSingleNode(
-                    "//body/div/div/div/div/div[5]/div/main/section/div/section/article/div/div/div/div/div/section[2]/div/div/div[2]/table/caption/text()" // Tue Oct 04 08:40 2022
-                  //"//body/div/div/div[1]/div[5]/div/main/section/div/section[2]/article/div/div/div/div/div/section[2]/div/div/div[2]/table/caption/text()" 
+                    $"{xpath}/table/caption/text()" // Tue Oct 04 08:40 2022
+                   //"//body/div/div/div[1]/div[5]/div/main/section/div/section[2]/article/div/div/div/div/div/section[2]/div/div/div[2]/table/caption/text()" 
                 ).InnerHtml.Trim();
             HtmlNode htmlTableRows = htmlDoc2.DocumentNode.SelectSingleNode(
-                    "//body/div/div/div/div/div[5]/div/main/section/div/section/article/div/div/div/div/div/section[2]/div/div/div[2]/table/tbody" // Tue Oct 04 08:40 2022
-                  //"//body/div/div/div[1]/div[5]/div/main/section/div/section[2]/article/div/div/div/div/div/section[2]/div/div/div[2]/table/tbody"
+                    $"{xpath}/table/tbody" // Tue Oct 04 08:40 2022
+                   //"//body/div/div/div[1]/div[5]/div/main/section/div/section[2]/article/div/div/div/div/div/section[2]/div/div/div[2]/table/tbody"
                 );
             rows = ExtractDataFromHtmlTableRows(htmlTableRows);
             foreach (var row in rows)

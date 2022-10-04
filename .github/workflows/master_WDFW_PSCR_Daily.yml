@@ -5,7 +5,7 @@ on:
     - master
   workflow_dispatch:
   schedule:
-    - cron: '0 3 * * *'    # every day at at 3AM
+    - cron: '0 2 * * *'    # every day at at 2AM
 env:
   AZURE_WEBAPP_NAME: pending-website
   AZURE_WEBAPP_PACKAGE_PATH: ./published
