@@ -23,7 +23,7 @@ public class ScrapeCreelReportsMainProgram
 {
     private static string seperator = ",";
     private static string replaceComma = ",";
-    private static bool upload = true;
+    private static bool upload = false;
     private static bool runInGitHub = true;
     public static async Task UploadBlob(string storageAccountConnection, string storageAccountContainer, string blobName, string text)
     {
@@ -194,28 +194,32 @@ public class ScrapeCreelReportsMainProgram
 
         return xml1 + xml2 + xml3;
     }
-
+    static System.Text.RegularExpressions.Regex patArea = new("Area ([0-9]+)");
     private static string MakeDataRows(List<List<string>> catchData)
     {
         var xml = "";
         foreach (var row in catchData)
         {
+            var m = patArea.Match(row[2]);
+            var ma = "0";
+            if (m.Success)
+                ma = m.Groups[1].Value;
             xml += "  <Row ss:AutoFitHeight=\"0\">\n"
-                + "      <Cell ss:StyleID=\"s66\">                             <Data ss:Type=\"DateTime\">" + row[0] + "</Data><NamedCell ss:Name=\"_FilterDatabase\"/></Cell>\n" // date
-                + "      <Cell>                                                <Data ss:Type=\"String\">" + row[1] + "</Data><NamedCell ss:Name=\"_FilterDatabase\"/></Cell>\n" // ramp
-                + "      <Cell>                                                <Data ss:Type=\"Number\">" + "0" + "</Data><NamedCell ss:Name=\"_FilterDatabase\"/></Cell>\n" // marine area
-                + "      <Cell>                                                <Data ss:Type=\"String\">" + row[2] + "</Data><NamedCell ss:Name=\"_FilterDatabase\"/></Cell>\n" // catch area
-                + "      <Cell>                                                <Data ss:Type=\"Number\">" + row[3] + "</Data><NamedCell ss:Name=\"_FilterDatabase\"/></Cell>\n" // # interviews
-                + "      <Cell>                                                <Data ss:Type=\"Number\">" + row[4] + "</Data><NamedCell ss:Name=\"_FilterDatabase\"/></Cell>\n" // anglers
-                + "      <Cell ss:StyleID=\"s65\">                             <Data ss:Type=\"Number\">" + row[5] + "</Data><NamedCell ss:Name=\"_FilterDatabase\"/></Cell>\n" // chinook per angler
-                + "      <Cell>                                                <Data ss:Type=\"Number\">" + row[6] + "</Data><NamedCell ss:Name=\"_FilterDatabase\"/></Cell>\n" // chinook
-                + "      <Cell ss:StyleID=\"s65\" ss:Formula=\"=RC[1]/RC[-3]\"><Data ss:Type=\"Number\">"+ double.Parse(row[7]) / double.Parse(row[4]) +"</Data><NamedCell ss:Name=\"_FilterDatabase\"/></Cell>\n" // coho per anguler
-                + "      <Cell>                                                <Data ss:Type=\"Number\">" + row[7] + "</Data><NamedCell ss:Name=\"_FilterDatabase\"/></Cell>\n" // coho
-                + "      <Cell>                                                <Data ss:Type=\"Number\">" + row[8] + "</Data><NamedCell ss:Name=\"_FilterDatabase\"/></Cell>\n" // chum
-                + "      <Cell>                                                <Data ss:Type=\"Number\">" + row[9] + "</Data><NamedCell ss:Name=\"_FilterDatabase\"/></Cell>\n" // pink
-                + "      <Cell>                                                <Data ss:Type=\"Number\">" + row[10] + "</Data><NamedCell ss:Name=\"_FilterDatabase\"/></Cell>\n" // sockeye
-                + "      <Cell>                                                <Data ss:Type=\"Number\">" + row[11] + "</Data><NamedCell ss:Name=\"_FilterDatabase\"/></Cell>\n" // lingcod
-                + "      <Cell>                                                <Data ss:Type=\"Number\">" + row[12] + "</Data><NamedCell ss:Name=\"_FilterDatabase\"/></Cell>\n" // Halibut
+                + "      <Cell ss:StyleID=\"s66\">                             <Data ss:Type=\"DateTime\">"+ row[0]                                     + "</Data><NamedCell ss:Name=\"_FilterDatabase\"/></Cell>\n" // date
+                + "      <Cell>                                                <Data ss:Type=\"String\">"  + row[1]                                     + "</Data><NamedCell ss:Name=\"_FilterDatabase\"/></Cell>\n" // ramp
+                + "      <Cell>                                                <Data ss:Type=\"Number\">"  + ma                                         + "</Data><NamedCell ss:Name=\"_FilterDatabase\"/></Cell>\n" // marine area
+                + "      <Cell>                                                <Data ss:Type=\"String\">"  + row[2]                                     + "</Data><NamedCell ss:Name=\"_FilterDatabase\"/></Cell>\n" // catch area
+                + "      <Cell>                                                <Data ss:Type=\"Number\">"  + row[3]                                     + "</Data><NamedCell ss:Name=\"_FilterDatabase\"/></Cell>\n" // # interviews
+                + "      <Cell>                                                <Data ss:Type=\"Number\">"  + row[4]                                     + "</Data><NamedCell ss:Name=\"_FilterDatabase\"/></Cell>\n" // anglers
+                + "      <Cell ss:StyleID=\"s65\">                             <Data ss:Type=\"Number\">"  + row[5]                                     + "</Data><NamedCell ss:Name=\"_FilterDatabase\"/></Cell>\n" // chinook per angler
+                + "      <Cell>                                                <Data ss:Type=\"Number\">"  + row[6]                                     + "</Data><NamedCell ss:Name=\"_FilterDatabase\"/></Cell>\n" // chinook
+                + "      <Cell ss:StyleID=\"s65\" ss:Formula=\"=RC[1]/RC[-3]\"><Data ss:Type=\"Number\">"  + double.Parse(row[7]) / double.Parse(row[4])+ "</Data><NamedCell ss:Name=\"_FilterDatabase\"/></Cell>\n" // coho per anguler
+                + "      <Cell>                                                <Data ss:Type=\"Number\">"  + row[7]                                     + "</Data><NamedCell ss:Name=\"_FilterDatabase\"/></Cell>\n" // coho
+                + "      <Cell>                                                <Data ss:Type=\"Number\">"  + row[8]                                     + "</Data><NamedCell ss:Name=\"_FilterDatabase\"/></Cell>\n" // chum
+                + "      <Cell>                                                <Data ss:Type=\"Number\">"  + row[9]                                     + "</Data><NamedCell ss:Name=\"_FilterDatabase\"/></Cell>\n" // pink
+                + "      <Cell>                                                <Data ss:Type=\"Number\">"  + row[10]                                    + "</Data><NamedCell ss:Name=\"_FilterDatabase\"/></Cell>\n" // sockeye
+                + "      <Cell>                                                <Data ss:Type=\"Number\">"  + row[11]                                    + "</Data><NamedCell ss:Name=\"_FilterDatabase\"/></Cell>\n" // lingcod
+                + "      <Cell>                                                <Data ss:Type=\"Number\">"  + row[12]                                    + "</Data><NamedCell ss:Name=\"_FilterDatabase\"/></Cell>\n" // Halibut
                 + "    </Row>\n";
         }
 
