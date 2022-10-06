@@ -23,7 +23,7 @@ public class ScrapeCreelReportsMainProgram
 {
     private static string seperator = ",";
     private static string replaceComma = ",";
-    private static bool upload = false;
+    private static bool upload = true;
     private static bool runInGitHub = true;
     public static async Task UploadBlob(string storageAccountConnection, string storageAccountContainer, string blobName, string text)
     {
@@ -195,19 +195,32 @@ public class ScrapeCreelReportsMainProgram
         return xml1 + xml2 + xml3;
     }
     static System.Text.RegularExpressions.Regex patArea = new("Area ([0-9]+)");
+    static Dictionary<string,int> names = new Dictionary<string,int>{ { "Quilcene", 9 }, { "Bellingham", 7 } };
+    static System.Text.RegularExpressions.Regex patName = new("^("+string.Join("|",names.Keys)+")");
     private static string MakeDataRows(List<List<string>> catchData)
     {
         var xml = "";
         foreach (var row in catchData)
         {
             var m = patArea.Match(row[2]);
-            var ma = "0";
+            var marineAreaId = "0";
             if (m.Success)
-                ma = m.Groups[1].Value;
+            {
+                marineAreaId = m.Groups[1].Value;
+            }
+            else
+            {
+                m = patName.Match(row[2]);
+                if (m.Success)
+                {
+                   var name = m.Groups[0].Value;
+                    marineAreaId = ""+names[name];
+                }
+            }
             xml += "  <Row ss:AutoFitHeight=\"0\">\n"
                 + "      <Cell ss:StyleID=\"s66\">                             <Data ss:Type=\"DateTime\">"+ row[0]                                     + "</Data><NamedCell ss:Name=\"_FilterDatabase\"/></Cell>\n" // date
                 + "      <Cell>                                                <Data ss:Type=\"String\">"  + row[1]                                     + "</Data><NamedCell ss:Name=\"_FilterDatabase\"/></Cell>\n" // ramp
-                + "      <Cell>                                                <Data ss:Type=\"Number\">"  + ma                                         + "</Data><NamedCell ss:Name=\"_FilterDatabase\"/></Cell>\n" // marine area
+                + "      <Cell>                                                <Data ss:Type=\"Number\">" + marineAreaId + "</Data><NamedCell ss:Name=\"_FilterDatabase\"/></Cell>\n" // marine area
                 + "      <Cell>                                                <Data ss:Type=\"String\">"  + row[2]                                     + "</Data><NamedCell ss:Name=\"_FilterDatabase\"/></Cell>\n" // catch area
                 + "      <Cell>                                                <Data ss:Type=\"Number\">"  + row[3]                                     + "</Data><NamedCell ss:Name=\"_FilterDatabase\"/></Cell>\n" // # interviews
                 + "      <Cell>                                                <Data ss:Type=\"Number\">"  + row[4]                                     + "</Data><NamedCell ss:Name=\"_FilterDatabase\"/></Cell>\n" // anglers
